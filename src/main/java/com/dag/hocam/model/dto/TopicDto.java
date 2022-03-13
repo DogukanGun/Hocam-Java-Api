@@ -19,5 +19,5 @@ public class TopicDto {
 
     private String topicName;
 
-    private List<Quiz> quizzes;
+    private List<QuizDto> quizzes;
 }

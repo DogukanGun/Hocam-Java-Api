@@ -13,4 +13,6 @@ public class CreateCompletedQuizRequest {
     private Integer userId;
 
     private Integer quizId;
+
+    private Double point;
 }

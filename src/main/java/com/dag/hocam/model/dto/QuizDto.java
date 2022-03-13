@@ -22,7 +22,7 @@ public class QuizDto {
 
     private String quizName;
 
-    private List<Question> questions;
+    private List<QuestionDto> questions;
 
 
 }

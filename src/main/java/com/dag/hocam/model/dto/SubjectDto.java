@@ -18,5 +18,5 @@ public class SubjectDto {
 
     private String subjectVideoUrl;
 
-    private List<ExampleQuestion> exampleQuestions;
+    private List<ExampleQuestionDto> exampleQuestions;
 }
