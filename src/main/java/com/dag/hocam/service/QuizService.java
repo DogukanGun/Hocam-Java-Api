@@ -12,6 +12,7 @@ import com.dag.hocam.model.request.quiz.CreateQuizRequest;
 import com.dag.hocam.repository.QuestionRepository;
 import com.dag.hocam.repository.QuizRepository;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -49,7 +50,7 @@ public class QuizService {
         return QUIZ_MAPPER.convertToQuizDtoList(quizzes);
     }
 
-    public QuestionDto updateQuestion(UpdateQuestionRequest updateQuestionRequest){
+    public QuestionDto updateQuestion(@NotNull UpdateQuestionRequest updateQuestionRequest){
         Question question = questionRepository.findById(updateQuestionRequest.getId())
                 .orElseThrow(()->new NotFoundException("Question not found"));
         if (updateQuestionRequest.getQuizId() != null){

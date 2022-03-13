@@ -1,6 +1,7 @@
 package com.dag.hocam.model.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,7 @@ public class Topic extends BaseEntity{
 
     private String topicName;
 
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER,mappedBy="topic")
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy="topic")
     private List<Quiz> quizzes;
 }

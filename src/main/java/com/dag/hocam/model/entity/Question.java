@@ -30,7 +30,7 @@ public class Question extends  BaseEntity{
     @Column(name = "quiz_id")
     private Integer quizId;
 
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id",insertable = false,updatable = false,nullable = false)
     private Quiz quiz;
 }

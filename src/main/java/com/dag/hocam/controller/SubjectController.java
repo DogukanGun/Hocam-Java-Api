@@ -26,4 +26,9 @@ public class SubjectController {
         return subjectService.getExampleQuestionsBySubjectName(subjectName);
     }
 
+    @PostMapping("subject/all")
+    public List<SubjectDto> getSubjects() {
+        return subjectService.getAllSubjects();
+    }
+
 }

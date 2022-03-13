@@ -34,7 +34,7 @@ public class ExampleQuestion extends BaseEntity{
     private Integer subjectId;
 
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id",insertable = false,updatable = false,nullable = false)
     private Subject subject;
 

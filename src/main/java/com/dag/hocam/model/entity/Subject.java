@@ -29,7 +29,7 @@ public class Subject extends BaseEntity{
 
     private String subjectVideoUrl;
 
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER,mappedBy = "subject")
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "subject")
     private List<ExampleQuestion> exampleQuestions;
 
 }

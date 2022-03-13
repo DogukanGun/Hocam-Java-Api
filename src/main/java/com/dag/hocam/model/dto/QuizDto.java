@@ -18,8 +18,6 @@ public class QuizDto {
 
     private Integer id;
 
-    private Topic topic;
-
     private String quizName;
 
     private List<QuestionDto> questions;

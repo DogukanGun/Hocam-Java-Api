@@ -41,6 +41,10 @@ public class SubjectService {
         return SUBJECT_MAPPER.convertToSubjectDto(returnedSubject);
     }
 
+    public List<SubjectDto> getAllSubjects(){
+        return SUBJECT_MAPPER.convertToSubjectDtoList(subjectRepository.findAll());
+    }
+
     public SubjectDto getSubjectByName(String subjectName){
         Subject subject = subjectRepository.findBySubjectName(subjectName)
                 .orElseThrow(()->new NotFoundException("Subject not found"));
