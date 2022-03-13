@@ -1,5 +1,6 @@
 package com.dag.hocam.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,6 +33,7 @@ public class ExampleQuestion extends BaseEntity{
     @Column(name = "subject_id")
     private Integer subjectId;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "subject_id",insertable = false,updatable = false,nullable = false)
     private Subject subject;

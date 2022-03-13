@@ -26,7 +26,8 @@ public class JwtTokenGenerator {
         Date expireDate = new Date(new Date().getTime() + EXPIRE_TIME);
 
         String token = Jwts.builder()
-                .setSubject(Long.toString(jwtUserDetails.getId()))
+                .setId(Long.toString(jwtUserDetails.getId()))
+                .setSubject(jwtUserDetails.getAuthorities().toArray()[0].toString())
                 .setIssuedAt(new Date())
                 .setExpiration(expireDate)
                 .signWith(SignatureAlgorithm.HS512, APP_KEY)
@@ -41,7 +42,7 @@ public class JwtTokenGenerator {
 
         String userIdStr = claimsJws
                 .getBody()
-                .getSubject();
+                .getId();
 
         return Integer.parseInt(userIdStr);
     }
@@ -59,7 +60,6 @@ public class JwtTokenGenerator {
 
         try {
             Jws<Claims> claimsJws = parseToken(token);
-
             isValid = !isTokenExpired(claimsJws);
         } catch (Exception e){
             isValid = false;

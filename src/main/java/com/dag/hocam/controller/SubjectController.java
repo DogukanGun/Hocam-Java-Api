@@ -16,11 +16,6 @@ public class SubjectController {
 
     private final SubjectService subjectService;
 
-    @PostMapping("createsubject")
-    public SubjectDto createSubject(@RequestBody CreateSubjectRequest createSubjectRequest) {
-        return subjectService.createSubject(createSubjectRequest);
-    }
-
     @PostMapping("subjectbyname/{subjectName}")
     public SubjectDto getSubjectByName(@PathVariable String subjectName) {
         return subjectService.getSubjectByName(subjectName);

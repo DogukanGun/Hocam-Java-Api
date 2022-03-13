@@ -8,6 +8,7 @@ import com.dag.hocam.model.request.user.UpdateUserRequest;
 import com.dag.hocam.sec.dto.LoginResponse;
 import com.dag.hocam.sec.dto.SecLoginRequestDto;
 import com.dag.hocam.sec.enums.EnumJwtConstant;
+import com.dag.hocam.sec.enums.UserType;
 import com.dag.hocam.sec.security.JwtTokenGenerator;
 import com.dag.hocam.sec.security.JwtUserDetails;
 import com.dag.hocam.service.UserEntityService;
@@ -30,8 +31,12 @@ public class AuthenticationService {
     private final JwtTokenGenerator jwtTokenGenerator;
 
     public UserDto register(CreateUserRequest cusCustomerSaveRequestDto) {
+        UserDto cusCustomerDto = cusCustomerService.createUser(cusCustomerSaveRequestDto, UserType.USER);
+        return cusCustomerDto;
+    }
 
-        UserDto cusCustomerDto = cusCustomerService.createUser(cusCustomerSaveRequestDto);
+    public UserDto registerAsTeacher(CreateUserRequest cusCustomerSaveRequestDto) {
+        UserDto cusCustomerDto = cusCustomerService.createUser(cusCustomerSaveRequestDto, UserType.ADMIN);
         return cusCustomerDto;
     }
 
@@ -51,10 +56,12 @@ public class AuthenticationService {
         String token = jwtTokenGenerator.generateJwtToken(authentication);
 
         String bearer = EnumJwtConstant.BEARER.getConstant() + token;
+        User user = getCurrentCustomer();
 
         LoginResponse loginResponse = LoginResponse.builder()
                 .username(secLoginRequestDto.getUsername())
                 .token(bearer)
+                .userType(user.getUserType())
                 .build();
 
         return loginResponse;

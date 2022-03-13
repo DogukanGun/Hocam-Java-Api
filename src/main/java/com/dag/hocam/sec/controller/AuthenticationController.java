@@ -38,6 +38,14 @@ public class AuthenticationController {
         return ResponseEntity.ok(RestResponse.of(cusCustomerDto));
     }
 
+    @PostMapping("/register/teacher")
+    public ResponseEntity registerAsTeacher(@RequestBody CreateUserRequest createUserRequest){
+
+        UserDto cusCustomerDto =authenticationService.registerAsTeacher(createUserRequest);
+
+        return ResponseEntity.ok(RestResponse.of(cusCustomerDto));
+    }
+
     @PostMapping("/getProfile")
     public ResponseEntity getProfile(@RequestBody UpdateUserRequest updateUserRequest){
         return ResponseEntity.ok(RestResponse.of(authenticationService.getProfile(updateUserRequest)));

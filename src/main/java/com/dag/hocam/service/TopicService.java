@@ -8,6 +8,8 @@ import com.dag.hocam.repository.TopicRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static com.dag.hocam.model.mapper.TopicMapper.TOPIC_MAPPER;
 
 @Service
@@ -19,5 +21,14 @@ public class TopicService {
     public TopicDto addTopic(CreateTopicRequest createTopicRequest){
         Topic topic = TOPIC_MAPPER.createTopic(createTopicRequest);
         return TOPIC_MAPPER.convertToTopicDto(topicRepository.save(topic));
+    }
+
+    public List<TopicDto> getAllTopics(){
+        List<Topic> topics = topicRepository.findAll();
+        return TOPIC_MAPPER.convertToTopicDtoList(topics);
+    }
+    public List<TopicDto> getAllTopics(String name){
+        List<Topic> topics = topicRepository.findAllByTopicName(name);
+        return TOPIC_MAPPER.convertToTopicDtoList(topics);
     }
 }

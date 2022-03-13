@@ -41,10 +41,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 UserDetails userDetails = jwtUserDetailsService.loadUserByUserId(userId);
 
                 if (userDetails != null){
-
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }
             }
@@ -61,7 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String bearer = EnumJwtConstant.BEARER.getConstant();
 
             if (fullToken.startsWith(bearer)){
-                token = fullToken.substring(bearer.length());
+                token = fullToken.substring(bearer.length()*2);
             }
         }
         return token;

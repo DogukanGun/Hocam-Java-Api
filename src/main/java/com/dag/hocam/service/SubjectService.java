@@ -27,8 +27,13 @@ public class SubjectService {
         Subject subject = Subject.builder()
                 .subjectName(createSubjectRequest.getSubjectName())
                 .subjectVideoUrl(createSubjectRequest.getSubjectVideoUrl()).build();
+        boolean anyMatch = subject.getExampleQuestions().stream().anyMatch(index -> index.getSubjectId() != subject.getId());
+        if (anyMatch){
+            throw new NotFoundException("Subject not found");
+        }
         Subject returnedSubject = subjectRepository.save(subject);
-        for(int i=0;i<3;i++){
+        int questionLimit = Math.min(createSubjectRequest.getExampleQuestionRequests().size(), 3);
+        for(int i=0;i<questionLimit;i++){
             ExampleQuestion exampleQuestion = EXAMPLE_QUESTION_MAPPER
                     .createExampleQuestion(createSubjectRequest.getExampleQuestionRequests().get(i));
             exampleQuestionRepository.save(exampleQuestion);

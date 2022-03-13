@@ -1,5 +1,6 @@
 package com.dag.hocam.sec.config;
 
+import com.dag.hocam.sec.enums.UserType;
 import com.dag.hocam.sec.security.JwtAuthenticationEntryPoint;
 import com.dag.hocam.sec.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -82,15 +84,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/auth/**",
-                        "/topic/**",
-                        "/quiz/**",
-                        "/subject/**",
                         "/swagger-ui/**",
                         "/swagger-ui.html",
                         "/v3/api-docs/**"
                 )
                 .permitAll()
+                .antMatchers("/add/**").hasAuthority(UserType.ADMIN.getLabel())
                 .anyRequest().authenticated();
 
+        httpSecurity.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }

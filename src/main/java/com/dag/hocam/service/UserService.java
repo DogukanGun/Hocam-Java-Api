@@ -6,6 +6,7 @@ import com.dag.hocam.model.entity.User;
 import com.dag.hocam.model.request.user.CreateUserRequest;
 import com.dag.hocam.model.request.user.UpdateUserRequest;
 import com.dag.hocam.repository.UserRepository;
+import com.dag.hocam.sec.enums.UserType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,9 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
 
-    public UserDto createUser(CreateUserRequest createUserRequest){
+    public UserDto createUser(CreateUserRequest createUserRequest, UserType userType){
         User user = USER_MAPPER.createUser(createUserRequest);
+        user.setUserType(userType.getLabel());
         String password = passwordEncoder.encode(user.getPassword());
         user.setPassword(password);
         return USER_MAPPER.convertToUserDto(userRepository.save(user));

@@ -7,6 +7,8 @@ import com.dag.hocam.model.request.topic.CreateTopicRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface TopicMapper {
 
@@ -15,4 +17,6 @@ public interface TopicMapper {
     TopicDto convertToTopicDto(Topic topic);
 
     Topic createTopic(CreateTopicRequest createTopicRequest);
+
+    List<TopicDto> convertToTopicDtoList(List<Topic> topics);
 }

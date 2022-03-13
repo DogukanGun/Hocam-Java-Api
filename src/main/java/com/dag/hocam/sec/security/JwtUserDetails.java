@@ -1,6 +1,7 @@
 package com.dag.hocam.sec.security;
 
 import com.dag.hocam.model.entity.User;
+import com.dag.hocam.sec.enums.UserType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,7 +32,7 @@ public class JwtUserDetails implements UserDetails {
         String password = cusCustomer.getPassword();
 
         List<GrantedAuthority> grantedAuthorityList = new ArrayList<>();
-        grantedAuthorityList.add(new SimpleGrantedAuthority("user"));
+        grantedAuthorityList.add(new SimpleGrantedAuthority(cusCustomer.getUserType()));
 
         return new JwtUserDetails(id, username, password, grantedAuthorityList);
     }
