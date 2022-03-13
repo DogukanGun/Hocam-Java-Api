@@ -24,8 +24,8 @@ public class TopicService {
     }
 
     public List<TopicDto> getAllTopics(){
-        List<Topic> topics = topicRepository.findAll();
-        return TOPIC_MAPPER.convertToTopicDtoList(topics);
+        List<Topic> topicList = topicRepository.findAll();
+        return TOPIC_MAPPER.convertToTopicDtoList(topicList);
     }
     public List<TopicDto> getAllTopics(String name){
         List<Topic> topics = topicRepository.findAllByTopicName(name);
