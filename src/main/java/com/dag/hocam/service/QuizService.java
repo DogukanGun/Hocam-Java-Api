@@ -31,7 +31,13 @@ public class QuizService {
 
     public QuizDto createQuiz(CreateQuizRequest createQuizRequest){
         Quiz quiz = QUIZ_MAPPER.createQuiz(createQuizRequest);
-        return QUIZ_MAPPER.convertToQuizDto(quizRepository.save(quiz));
+        Quiz savedQuiz = quizRepository.save(quiz);
+        for (CreateQuestionRequest createQuestionRequest : createQuizRequest.getCreateQuestionRequests()) {
+            createQuestionRequest.setQuizId(savedQuiz.getId());
+            createQuestion(createQuestionRequest);
+        }
+        savedQuiz = quizRepository.findById(savedQuiz.getId()).orElseThrow(()->new NotFoundException("Quiz not found"));
+        return QUIZ_MAPPER.convertToQuizDto(savedQuiz);
     }
 
     public List<QuestionDto> getQuestionsByQuizName(String quizName){
