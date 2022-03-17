@@ -14,6 +14,7 @@ import com.dag.hocam.repository.QuizRepository;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
 import java.util.Arrays;
@@ -29,6 +30,7 @@ public class QuizService {
     private final QuizRepository quizRepository;
     private final QuestionRepository questionRepository;
 
+    @Transactional
     public QuizDto createQuiz(CreateQuizRequest createQuizRequest){
         Quiz quiz = QUIZ_MAPPER.createQuiz(createQuizRequest);
         Quiz savedQuiz = quizRepository.save(quiz);
@@ -36,10 +38,12 @@ public class QuizService {
             createQuestionRequest.setQuizId(savedQuiz.getId());
             createQuestion(createQuestionRequest);
         }
+
         savedQuiz = quizRepository.findById(savedQuiz.getId()).orElseThrow(()->new NotFoundException("Quiz not found"));
         return QUIZ_MAPPER.convertToQuizDto(savedQuiz);
     }
 
+    @Transactional
     public List<QuestionDto> getQuestionsByQuizName(String quizName){
         Quiz quiz = quizRepository.findByQuizName(quizName).orElseThrow(()->new NotFoundException("Quiz not found"));
         List<Question> questions = quiz.getQuestions();
@@ -56,6 +60,7 @@ public class QuizService {
         return QUIZ_MAPPER.convertToQuizDtoList(quizzes);
     }
 
+    @Transactional
     public QuestionDto updateQuestion(@NotNull UpdateQuestionRequest updateQuestionRequest){
         Question question = questionRepository.findById(updateQuestionRequest.getId())
                 .orElseThrow(()->new NotFoundException("Question not found"));

@@ -26,6 +26,7 @@ public class Quiz extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    @Column(unique = true)
     private String quizName;
 
     @Column(name = "topic_id")

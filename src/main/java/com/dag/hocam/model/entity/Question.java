@@ -23,6 +23,7 @@ public class Question extends  BaseEntity{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    @Column(length = 1350000)
     private String question;
 
     private String correctAnswer;
