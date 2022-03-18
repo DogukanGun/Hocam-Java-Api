@@ -16,6 +16,11 @@ public class QuestionFromUserController {
 
     private final QuestionFromUserService questionFromUserService;
 
+    @PostMapping("add")
+    public QuestionFromUserDto addQuestionFromUser(@RequestBody CreateQuestionFromUserRequest createQuestionFromUserRequest){
+        return questionFromUserService.createQuestionFromUser(createQuestionFromUserRequest);
+    }
+
     @PostMapping("get/all")
     public List<QuestionFromUserDto> getAllQuestionFromUser(){
         return questionFromUserService.getAllUnsolvedQuestions();

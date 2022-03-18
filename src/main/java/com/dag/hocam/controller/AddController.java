@@ -29,11 +29,6 @@ public class AddController {
         return quizService.createQuiz(createQuizRequest);
     }
 
-    @PostMapping("questionfromuser")
-    public QuestionFromUserDto addQuestionFromUser(@RequestBody CreateQuestionFromUserRequest createQuestionFromUserRequest){
-        return questionFromUserService.createQuestionFromUser(createQuestionFromUserRequest);
-    }
-
     @PostMapping("question")
     public QuestionDto createQuestion(@RequestBody CreateQuestionRequest createQuestionRequest) {
         return quizService.createQuestion(createQuestionRequest);
