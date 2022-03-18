@@ -1,18 +1,13 @@
 package com.dag.hocam.controller;
 
-import com.dag.hocam.model.dto.QuestionDto;
-import com.dag.hocam.model.dto.QuizDto;
-import com.dag.hocam.model.dto.SubjectDto;
-import com.dag.hocam.model.dto.TopicDto;
+import com.dag.hocam.model.dto.*;
 import com.dag.hocam.model.request.question.CreateQuestionRequest;
 import com.dag.hocam.model.request.question.UpdateQuestionRequest;
+import com.dag.hocam.model.request.questionfromuser.CreateQuestionFromUserRequest;
 import com.dag.hocam.model.request.quiz.CreateQuizRequest;
 import com.dag.hocam.model.request.subject.CreateSubjectRequest;
 import com.dag.hocam.model.request.topic.CreateTopicRequest;
-import com.dag.hocam.service.CompletedQuizService;
-import com.dag.hocam.service.QuizService;
-import com.dag.hocam.service.SubjectService;
-import com.dag.hocam.service.TopicService;
+import com.dag.hocam.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,10 +22,16 @@ public class AddController {
     private final QuizService quizService;
     private final SubjectService subjectService;
     private final TopicService topicService;
+    private final QuestionFromUserService questionFromUserService;
 
     @PostMapping("quiz")
     public QuizDto createQuiz(@RequestBody CreateQuizRequest createQuizRequest) {
         return quizService.createQuiz(createQuizRequest);
+    }
+
+    @PostMapping("questionfromuser")
+    public QuestionFromUserDto addQuestionFromUser(@RequestBody CreateQuestionFromUserRequest createQuestionFromUserRequest){
+        return questionFromUserService.createQuestionFromUser(createQuestionFromUserRequest);
     }
 
     @PostMapping("question")

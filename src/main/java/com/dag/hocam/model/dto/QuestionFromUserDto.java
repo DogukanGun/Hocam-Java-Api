@@ -9,13 +9,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CompletedQuizDto {
+public class QuestionFromUserDto {
+    private Integer id;
 
-    private Integer userId;
+    private String question;
 
-    private Integer quizId;
+    private String responseMail;
 
-    private String quizName;
-
-    private Double point;
 }
