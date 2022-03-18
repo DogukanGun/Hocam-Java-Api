@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CreateCompletedQuizRequest {
-    private Integer userId;
+    private String username;
 
     private Integer quizId;
 
