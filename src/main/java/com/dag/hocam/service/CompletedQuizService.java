@@ -25,6 +25,7 @@ public class CompletedQuizService {
                 .orElseThrow(()->new NotFoundException("User Not Found"));
         CompletedQuiz completedQuiz = CompletedQuiz.builder()
                 .quizId(createCompletedQuizRequest.getQuizId())
+                .point(createCompletedQuizRequest.getPoint())
                 .userId(user.getId())
                 .build();
         return COMPLETED_QUIZ_MAPPER.convertToCompletedQuizDto(completedQuizRepository.save(completedQuiz));
