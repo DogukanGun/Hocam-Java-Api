@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("add")
 @RequiredArgsConstructor
@@ -30,8 +32,8 @@ public class AddController {
     }
 
     @PostMapping("question")
-    public QuestionDto createQuestion(@RequestBody CreateQuestionRequest createQuestionRequest) {
-        return quizService.createQuestion(createQuestionRequest);
+    public List<QuestionDto> createQuestions(@RequestBody List<CreateQuestionRequest> createQuestionRequestList){
+        return quizService.createQuestions(createQuestionRequestList);
     }
 
     @PostMapping("question/update")

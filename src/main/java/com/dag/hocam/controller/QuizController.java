@@ -6,8 +6,10 @@ import com.dag.hocam.model.dto.QuizDto;
 import com.dag.hocam.model.entity.Quiz;
 import com.dag.hocam.model.request.completedQuiz.CreateCompletedQuizRequest;
 import com.dag.hocam.model.request.question.CreateQuestionRequest;
+import com.dag.hocam.model.request.question.GetQuestionRequest;
 import com.dag.hocam.model.request.question.UpdateQuestionRequest;
 import com.dag.hocam.model.request.quiz.CreateQuizRequest;
+import com.dag.hocam.model.request.quiz.GetAllQuizzesRequest;
 import com.dag.hocam.service.CompletedQuizService;
 import com.dag.hocam.service.QuizService;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +25,9 @@ public class QuizController {
     private final QuizService quizService;
     private final CompletedQuizService completedQuizService;
 
-    @PostMapping("question/getAll/{quizName}")
-    public List<QuestionDto> getQuestionsByQuizName(@PathVariable String quizName) {
-        return quizService.getQuestionsByQuizName(quizName);
-    }
-
-    @PostMapping("getAll")
-    public List<QuizDto> getAllQuizzes() {
-        return quizService.getAllQuizzes();
+    @PostMapping("question/getAll")
+    public List<QuestionDto> getQuestionsByQuizName(@RequestBody GetQuestionRequest getQuestionRequest) {
+        return quizService.getQuestionsByQuizName(getQuestionRequest);
     }
 
     @PostMapping("question/complete/quiz")
@@ -41,6 +38,16 @@ public class QuizController {
     @PostMapping("quiz/solved/{username}")
     public List<CompletedQuizDto> getCompletedQuizzes(@PathVariable String username){
         return completedQuizService.getCompletedQuizzes(username);
+    }
+
+    @PostMapping("get/all")
+    public List<QuizDto> getAllQuizzes(@RequestBody GetAllQuizzesRequest getAllQuizzesRequest) {
+        return quizService.getAllQuizzes(getAllQuizzesRequest);
+    }
+
+    @PostMapping("quiz/getby/topic")
+    public List<QuizDto> getAllQuizzesByTopic(@RequestBody GetAllQuizzesRequest getAllQuizzesRequest){
+        return quizService.getAllQuizzesByTopic(getAllQuizzesRequest);
     }
 
 }

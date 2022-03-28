@@ -3,22 +3,26 @@ package com.dag.hocam.service;
 
 import com.dag.hocam.model.dto.QuestionDto;
 import com.dag.hocam.model.dto.QuizDto;
-import com.dag.hocam.model.entity.Question;
-import com.dag.hocam.model.entity.Quiz;
+import com.dag.hocam.model.entity.*;
 import com.dag.hocam.model.enums.AnswerType;
+import com.dag.hocam.model.enums.QuestionLevel;
 import com.dag.hocam.model.request.question.CreateQuestionRequest;
+import com.dag.hocam.model.request.question.GetQuestionRequest;
 import com.dag.hocam.model.request.question.UpdateQuestionRequest;
 import com.dag.hocam.model.request.quiz.CreateQuizRequest;
-import com.dag.hocam.repository.QuestionRepository;
-import com.dag.hocam.repository.QuizRepository;
+import com.dag.hocam.model.request.quiz.GetAllQuizzesRequest;
+import com.dag.hocam.repository.*;
+import com.dag.hocam.sec.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.dag.hocam.model.mapper.QuestionMapper.QUESTION_MAPPER;
 import static com.dag.hocam.model.mapper.QuizMapper.QUIZ_MAPPER;
@@ -29,25 +33,63 @@ public class QuizService {
 
     private final QuizRepository quizRepository;
     private final QuestionRepository questionRepository;
+    private final AuthenticationService authenticationService;
+    private final CompletedQuestionRepository completedQuestionRepository;
+    private final CompletedQuizRepository completedQuizRepository;
+
 
     @Transactional
     public QuizDto createQuiz(CreateQuizRequest createQuizRequest){
         Quiz quiz = QUIZ_MAPPER.createQuiz(createQuizRequest);
-        Quiz savedQuiz = quizRepository.save(quiz);
-        for (CreateQuestionRequest createQuestionRequest : createQuizRequest.getCreateQuestionRequests()) {
-            createQuestionRequest.setQuizId(savedQuiz.getId());
-            createQuestion(createQuestionRequest);
-        }
-
-        savedQuiz = quizRepository.findById(savedQuiz.getId()).orElseThrow(()->new NotFoundException("Quiz not found"));
-        return QUIZ_MAPPER.convertToQuizDto(savedQuiz);
+        return QUIZ_MAPPER.convertToQuizDto(quizRepository.save(quiz));
     }
 
     @Transactional
-    public List<QuestionDto> getQuestionsByQuizName(String quizName){
-        Quiz quiz = quizRepository.findByQuizName(quizName).orElseThrow(()->new NotFoundException("Quiz not found"));
+    public List<QuestionDto> getQuestionsByQuizName(GetQuestionRequest getQuestionRequest){
+        Quiz quiz = quizRepository.findByQuizName(getQuestionRequest.getQuizName()).orElseThrow(()->new NotFoundException("Quiz not found"));
         List<Question> questions = quiz.getQuestions();
-        return QUESTION_MAPPER.convertToQuestionDtoList(questions);
+        return QUESTION_MAPPER.convertToQuestionDtoList(filterQuestion(questions));
+    }
+
+    private List<Question> filterQuestion(List<Question> questionList){
+        Integer userId = authenticationService.getCurrentCustomerId();
+        List<CompletedQuestion> completedQuestionList = completedQuestionRepository.findAllByUserId(userId);
+        List<Question> returnedQuestions = new ArrayList<>();
+        for (Question question : questionList) {
+            boolean flag = false;
+            for (CompletedQuestion completedQuestion: completedQuestionList) {
+                if (question.getId() == completedQuestion.getQuestionId() && completedQuestion.getUserId() == userId){
+                    flag = true;
+                    break;
+                }
+            }
+            if (!flag){
+                returnedQuestions.add(question);
+            }
+        }
+        return returnedQuestions;
+    }
+
+    private void checkLevel(String level){
+        for (QuestionLevel questionLevel : QuestionLevel.values()) {
+            if (questionLevel.label.equals(level)){
+                return;
+            }
+        }
+        throw new NotFoundException("Level not found");
+    }
+
+    @Transactional
+    public List<QuestionDto> createQuestions(List<CreateQuestionRequest> createQuestionRequestList){
+        List<QuestionDto> returnedQuestions = new ArrayList<>();
+        for (CreateQuestionRequest createQuestionRequest:createQuestionRequestList) {
+            checkLevel(createQuestionRequest.getLevel());
+            // TODO: 29.03.2022 quiz ile ilişki kontrol edilmeli
+            Question question = QUESTION_MAPPER.createQuestion(createQuestionRequest);
+            QuestionDto questionDto = QUESTION_MAPPER.convertToQuestionDto(questionRepository.save(question));
+            returnedQuestions.add(questionDto);
+        }
+        return returnedQuestions;
     }
 
     public QuestionDto createQuestion(CreateQuestionRequest createQuestionRequest){
@@ -55,10 +97,45 @@ public class QuizService {
         return QUESTION_MAPPER.convertToQuestionDto(questionRepository.save(question));
     }
 
-    public List<QuizDto> getAllQuizzes(){
+    private List<Quiz> filterQuizzes(List<Quiz> quizzes){
+        Integer userId = authenticationService.getCurrentCustomerId();
+        List<Quiz> notSolvedQuizzes = new ArrayList<>();
+        List<CompletedQuiz> completedQuizList = completedQuizRepository.findAllByUserId(userId);
+        for (Quiz quiz : quizzes) {
+            boolean flag = false;
+            for (CompletedQuiz completedQuiz: completedQuizList) {
+                if (completedQuiz.getQuizId() == quiz.getId() && completedQuiz.getUserId() == userId){
+                    flag = true;
+                    break;
+                }
+            }
+            if (!flag){
+                notSolvedQuizzes.add(quiz);
+            }
+        }
+        return notSolvedQuizzes;
+    }
+
+    public List<QuizDto> getAllQuizzes(GetAllQuizzesRequest getAllQuizzesRequest){
         List<Quiz> quizzes = quizRepository.findAll();
+        if (getAllQuizzesRequest.isQuizFilter()){
+            quizzes = filterQuizzes(quizzes);
+        }
         return QUIZ_MAPPER.convertToQuizDtoList(quizzes);
     }
+
+    public List<QuizDto> getAllQuizzesByTopic(GetAllQuizzesRequest getAllQuizzesRequest){
+        if (getAllQuizzesRequest.getTopicId() != null){
+            List<Quiz> quizzes = quizRepository.findAllByTopicId(getAllQuizzesRequest.getTopicId()).orElseThrow(()->new NotFoundException("Quizzes not found"));
+            if (getAllQuizzesRequest.isQuizFilter()){
+                quizzes = filterQuizzes(quizzes);
+            }
+            return QUIZ_MAPPER.convertToQuizDtoList(quizzes);
+        }
+        throw new NotFoundException("Quiz not found");
+    }
+
+
 
     @Transactional
     public QuestionDto updateQuestion(@NotNull UpdateQuestionRequest updateQuestionRequest){

@@ -19,4 +19,6 @@ public class CreateExampleQuestionRequest {
 
     private Integer subjectId;
 
+    private String level;
+
 }

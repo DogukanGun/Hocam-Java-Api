@@ -12,4 +12,5 @@ public interface QuizRepository extends JpaRepository<Quiz,Integer> {
 
     Optional<Quiz> findByQuizName(String quizName);
     Optional<Quiz> findAllById(int quizId);
+    Optional<List<Quiz>> findAllByTopicId(int topicId);
 }

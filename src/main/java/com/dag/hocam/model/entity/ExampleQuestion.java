@@ -30,6 +30,9 @@ public class ExampleQuestion extends BaseEntity{
 
     private String solution;
 
+    @Column(length = 1350000)
+    private String level;
+
     @Column(name = "subject_id")
     private Integer subjectId;
 

@@ -1,23 +1,17 @@
 package com.dag.hocam.model.request.question;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @Builder
-public class CreateQuestionRequest {
+public class GetQuestionRequest {
 
-    private String question;
+    private String quizName;
 
-    private String correctAnswer;
-
-    private Integer quizId;
-
-    private String level;
-
+    private boolean isQuestionFiltered = false;
 }

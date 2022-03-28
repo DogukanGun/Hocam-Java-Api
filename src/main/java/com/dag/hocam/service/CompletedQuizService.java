@@ -2,11 +2,13 @@ package com.dag.hocam.service;
 
 
 import com.dag.hocam.model.dto.CompletedQuizDto;
-import com.dag.hocam.model.dto.QuizDto;
+import com.dag.hocam.model.dto.QuestionDto;
+import com.dag.hocam.model.entity.CompletedQuestion;
 import com.dag.hocam.model.entity.CompletedQuiz;
 import com.dag.hocam.model.entity.Quiz;
 import com.dag.hocam.model.entity.User;
 import com.dag.hocam.model.request.completedQuiz.CreateCompletedQuizRequest;
+import com.dag.hocam.repository.CompletedQuestionRepository;
 import com.dag.hocam.repository.CompletedQuizRepository;
 import com.dag.hocam.repository.QuizRepository;
 import com.dag.hocam.repository.UserRepository;
@@ -19,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.dag.hocam.model.mapper.CompletedQuizMapper.COMPLETED_QUIZ_MAPPER;
-import static com.dag.hocam.model.mapper.QuizMapper.QUIZ_MAPPER;
 
 @Service
 @RequiredArgsConstructor
@@ -27,11 +28,22 @@ public class CompletedQuizService {
 
     private final UserRepository userRepository;
     private final CompletedQuizRepository completedQuizRepository;
+    private final CompletedQuestionRepository completedQuestionRepository;
     private final QuizRepository quizRepository;
 
+    @Transactional
     public CompletedQuizDto completedQuiz(CreateCompletedQuizRequest createCompletedQuizRequest){
         User user = userRepository.findByUsernameEquals(createCompletedQuizRequest.getUsername())
                 .orElseThrow(()->new NotFoundException("User Not Found"));
+        for (Integer integer :
+                createCompletedQuizRequest.getQuestionDtoList()) {
+            CompletedQuestion completedQuestion = CompletedQuestion.builder()
+                    .quizId(createCompletedQuizRequest.getQuizId())
+                    .userId(user.getId())
+                    .questionId(integer)
+                    .build();
+            completedQuestionRepository.save(completedQuestion);
+        }
         CompletedQuiz completedQuiz = CompletedQuiz.builder()
                 .quizId(createCompletedQuizRequest.getQuizId())
                 .point(createCompletedQuizRequest.getPoint())
