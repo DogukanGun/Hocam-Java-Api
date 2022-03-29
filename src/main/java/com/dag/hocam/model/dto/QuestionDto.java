@@ -18,4 +18,6 @@ public class QuestionDto {
 
     private String correctAnswer;
 
+    private String level;
+
 }

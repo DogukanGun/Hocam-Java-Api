@@ -14,4 +14,6 @@ public class GetQuestionRequest {
     private String quizName;
 
     private boolean isQuestionFiltered = false;
+
+    private int maxQuestionNumber = 15;
 }

@@ -48,23 +48,49 @@ public class QuizService {
     public List<QuestionDto> getQuestionsByQuizName(GetQuestionRequest getQuestionRequest){
         Quiz quiz = quizRepository.findByQuizName(getQuestionRequest.getQuizName()).orElseThrow(()->new NotFoundException("Quiz not found"));
         List<Question> questions = quiz.getQuestions();
-        return QUESTION_MAPPER.convertToQuestionDtoList(filterQuestion(questions));
+        return QUESTION_MAPPER.convertToQuestionDtoList(filterQuestion(questions,getQuestionRequest.getMaxQuestionNumber()));
     }
 
-    private List<Question> filterQuestion(List<Question> questionList){
+    private List<Question> filterQuestion(List<Question> questionList,int maxQuestionNumber){
         Integer userId = authenticationService.getCurrentCustomerId();
         List<CompletedQuestion> completedQuestionList = completedQuestionRepository.findAllByUserId(userId);
         List<Question> returnedQuestions = new ArrayList<>();
+        int hardCounter = 0;
+        int mediumCounter = 0;
+        int easyCounter = 0;
         for (Question question : questionList) {
-            boolean flag = false;
+            boolean flag;
             for (CompletedQuestion completedQuestion: completedQuestionList) {
-                if (question.getId() == completedQuestion.getQuestionId() && completedQuestion.getUserId() == userId){
-                    flag = true;
+                flag = question.getId() == completedQuestion.getQuestionId() && completedQuestion.getUserId() == userId;
+                if (question.getLevel() != null){
+                    if (question.getLevel().equals(QuestionLevel.MEDIUM.label)){
+                        if (mediumCounter >4){
+                            flag =  true;
+                        }else{
+                            mediumCounter+=1;
+                        }
+                    }
+                    else if (question.getLevel().equals(QuestionLevel.HARD.label)){
+                        if (hardCounter >4){
+                            flag =  true;
+                        }else{
+                            hardCounter+=1;
+                        }
+                    }
+                    else if (question.getLevel().equals(QuestionLevel.EASY.label)){
+                        if (easyCounter >4){
+                            flag =  true;
+                        }else{
+                            easyCounter+=1;
+                        }
+                    }
+                }
+                if (!flag){
+                    returnedQuestions.add(question);
+                }
+                if (maxQuestionNumber != returnedQuestions.size()){
                     break;
                 }
-            }
-            if (!flag){
-                returnedQuestions.add(question);
             }
         }
         return returnedQuestions;
