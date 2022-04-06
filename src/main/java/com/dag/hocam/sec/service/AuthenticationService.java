@@ -50,6 +50,9 @@ public class AuthenticationService {
     public LoginResponse login(SecLoginRequestDto secLoginRequestDto) {
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(secLoginRequestDto.getUsername(), secLoginRequestDto.getPassword());
+        if (!authenticationToken.isAuthenticated()){
+            return null;
+        }
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
