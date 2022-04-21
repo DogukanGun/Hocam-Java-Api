@@ -4,6 +4,7 @@ package com.dag.hocam.sec.service;
 import com.dag.hocam.model.dto.UserDto;
 import com.dag.hocam.model.entity.User;
 import com.dag.hocam.model.request.user.CreateUserRequest;
+import com.dag.hocam.model.request.user.UpdatePasswordRequest;
 import com.dag.hocam.model.request.user.UpdateUserRequest;
 import com.dag.hocam.sec.dto.LoginResponse;
 import com.dag.hocam.sec.dto.SecLoginRequestDto;
@@ -32,6 +33,11 @@ public class AuthenticationService {
 
     public UserDto register(CreateUserRequest cusCustomerSaveRequestDto) {
         UserDto cusCustomerDto = cusCustomerService.createUser(cusCustomerSaveRequestDto, UserType.USER);
+        return cusCustomerDto;
+    }
+
+    public UserDto updatePassword(UpdatePasswordRequest updatePasswordRequest){
+        UserDto cusCustomerDto = cusCustomerService.updatePassword(updatePasswordRequest);
         return cusCustomerDto;
     }
 
